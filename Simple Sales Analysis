@@ -1,0 +1,33 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+data = {
+    'Produto': ['A', 'B', 'A', 'C', 'A', 'B', 'C', 'A', 'B', 'C'],
+    'Quantidade': [10, 5, 8, 12, 7, 6, 9, 15, 10, 14],
+    'Preço_Unitario': [20, 50, 20, 30, 20, 50, 30, 20, 50, 30],
+    'Data': pd.date_range(start='2023-01-01', periods=10, freq='D')
+}
+
+df = pd.DataFrame(data)
+
+df['Receita'] = df['Quantidade'] * df['Preço_Unitario']
+
+print("Resumo Estatístico:\n", df.describe())
+
+produto_mais_vendido = df.groupby('Produto')['Quantidade'].sum().idxmax()
+print("Produto mais vendido:", produto_mais_vendido)
+
+receita_por_produto = df.groupby('Produto')['Receita'].sum()
+
+# Visualização dos dados
+plt.figure(figsize=(10, 5))
+sns.barplot(x=receita_por_produto.index, y=receita_por_produto.values, palette='viridis')
+plt.title('Receita Total por Produto')
+plt.xlabel('Produto')
+plt.ylabel('Receita Total')
+plt.show()
+
+# Salvar dataset tratado
+df.to_csv('dados_vendas_tratado.csv', index=False)
